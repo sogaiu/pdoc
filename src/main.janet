@@ -1,8 +1,7 @@
 (import ./argv :as av)
 (import ./completion :as compl)
-(import ./data :as data) # needed for dyn in ex/get-content
+(import ./data :as data)
 (import ./examples :as ex)
-(import ./names :as n)
 (import ./random :as rnd)
 (import ./show :as s)
 (import ./view :as view)
@@ -77,7 +76,7 @@
 
   # help completion by showing a raw list of relevant names
   (when (opts :raw-all)
-    (s/all-names n/names)
+    (s/all-names data/names)
     (os/exit 0))
 
   # check if there was a peg special specified
@@ -92,7 +91,7 @@
     (os/exit 0))
 
   # ensure a special-name beyond this form by choosing one if needed
-  (default special (rnd/choose n/names))
+  (default special (rnd/choose data/names))
 
   # show docs, usages, and/or quizzes for a special-fname
   (def content (ex/get-content special))

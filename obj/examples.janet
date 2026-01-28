@@ -1,5 +1,4 @@
-#(import ./data :as data) # import happens in main.janet for dyn
-(import ./names :prefix "")
+(import ./data :prefix "")
 
 (def ex/examples-table
   @{"+" "choice"
@@ -33,7 +32,7 @@
         (try (int? (scan-number thing)) ([e] nil))
         "0.integer"
         #
-        (def sp (get (invert n/names) thing))
+        (def sp (get data/names thing))
         thing
         #
         nil))))
@@ -175,10 +174,5 @@
 
 (defn ex/get-content
   [special]
-  (assertf (get (invert n/names) special)
-           "unexpected value encountered for special: %n" special)
-  (def sp-name (string "data/" special))
-  (def sp-sym (symbol sp-name))
-  (def entry (dyn sp-sym))
-  (get entry :value))
+  (get data/names special))
 

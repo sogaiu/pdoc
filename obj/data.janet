@@ -1,5 +1,115 @@
-(def data/_boolean
-  `````
+(def data/names
+  @{
+"_all-the-names"
+````````
+#
+# Primitive Patterns
+#   Integer (..., -1, 0, 1, ...)
+#   range                  =  (range r1 ?r2 ... ?rn)
+#   set                    =  (set chars)
+#   String ("...")
+#   Buffer (@"...")
+#   Boolean (true, false)
+#
+# Combining Patterns
+#   any                    =  (any patt)
+#   at-least               =  (at-least n patt)
+#   at-most                =  (at-most n patt)
+#   backmatch              =  (backmatch ?tag)
+#   between (opt, ?)       =  (between min max patt)
+#   choice (+)             =  (choice patt-1 patt-2 ...)
+#   if                     =  (if cond patt)
+#   if-not                 =  (if-not cond patt)
+#   look (>)               =  (look offset ?patt)
+#   not (!)                =  (not patt)
+#   repeat (0, 1, 2, ...)  =  (repeat n patt)
+#   sequence (*)           =  (sequence patt-1 patt-2 ...)
+#   some                   =  (some patt)
+#   split                  =  (split sep patt)
+#   sub                    =  (sub window-patt patt)
+#   thru                   =  (thru patt)
+#   til                    =  (til sep patt)
+#   to                     =  (to patt)
+#
+# Captures
+#   accumulate (%)         =  (accumulate pat ?tag)
+#   argument               =  (argument n ?tag)
+#   backref (->)           =  (backref prev-tag ?tag)
+#   capture (<-, quote)    =  (capture patt ?tag)
+#   cmt                    =  (cmt patt fun ?tag)
+#   cms                    =  (cms patt fun ?tag)
+#   column                 =  (column ?tag)
+#   constant               =  (constant k ?tag)
+#   drop                   =  (drop patt)
+#   error                  =  (error ?patt)
+#   group                  =  (group patt ?tag)
+#   int                    =  (int n ?tag)
+#   int-be                 =  (int-be n ?tag)
+#   lenprefix              =  (lenprefix n patt)
+#   line                   =  (line ?tag)
+#   nth                    =  (nth index patt ?tag)
+#   number                 =  (number patt ?base ?tag)
+#   only-tags              =  (only-tags patt)
+#   position ($)           =  (position ?tag)
+#   replace (/)            =  (replace patt subst ?tag)
+#   uint                   =  (uint n ?tag)
+#   uint-be                =  (uint-be n ?tag)
+#   unref                  =  (unref rule ?tag)
+#
+# Built-ins
+#   :a                     =  (range "AZ" "az")
+#   :d                     =  (range "09")
+#   :h                     =  (range "09" "AF" "af")
+#   :s                     =  (set " \0\f\n\r\t\v")
+#   :w                     =  (range "09" "AZ" "az")
+#   :A                     =  (if-not :a 1)
+#   :D                     =  (if-not :d 1)
+#   :H                     =  (if-not :h 1)
+#   :S                     =  (if-not :s 1)
+#   :W                     =  (if-not :w 1)
+#   :a+                    =  (some :a)
+#   :d+                    =  (some :d)
+#   :h+                    =  (some :h)
+#   :s+                    =  (some :s)
+#   :w+                    =  (some :w)
+#   :A+                    =  (some :A)
+#   :D+                    =  (some :D)
+#   :H+                    =  (some :H)
+#   :S+                    =  (some :S)
+#   :W+                    =  (some :W)
+#   :a*                    =  (any :a)
+#   :d*                    =  (any :d)
+#   :h*                    =  (any :h)
+#   :s*                    =  (any :s)
+#   :w*                    =  (any :w)
+#   :A*                    =  (any :A)
+#   :D*                    =  (any :D)
+#   :H*                    =  (any :H)
+#   :S*                    =  (any :S)
+#   :W*                    =  (any :W)
+#
+# Aliases
+#   (! patt)               =  (not patt)
+#   ($ ?tag)               =  (position ?tag)
+#   (% patt ?tag)          =  (accumulate patt ?tag)
+#   (* patt-1 ... patt-n)  =  (sequence patt-1 ... patt-n)
+#   (+ patt-1 ... patt-n)  =  (choice patt-1 ... patt-n)
+#   (-> prev-tag ?tag)     =  (backref prev-tag ?tag)
+#   (/ patt subst ?tag)    =  (replace patt subst ?tag)
+#   (<- patt ?tag)         =  (capture patt ?tag)
+#   (> offset ?patt)       =  (look offset ?patt)
+#   (? patt)               =  (between 0 1 patt)
+#   (1 patt)               =  (repeat 1 patt)
+#   (2 patt)               =  (repeat 2 patt)
+#   (3 patt)               =  (repeat 3 patt)
+#   ...
+#   (opt patt)             =  (between 0 1 patt)
+#   (quote patt ?tag)      =  (capture patt ?tag)
+#   'patt                  =  (capture patt)
+#
+````````
+"_boolean"
+````````
 (import ../margaret/meg :as peg)
 
 # `true` or `false`
@@ -41,12 +151,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/_buffer
-  `````
+````````
+"_buffer"
+````````
 (import ../margaret/meg :as peg)
 
 # `@"<b>"` -- where <s> is buffer content
@@ -76,12 +183,49 @@
   nil
 
   )
+````````
+"_compile"
+````````
+(import ../margaret/meg :as peg)
 
-  `````
-)
+(comment
 
-(def data/_dictionary
-  `````
+  (type (peg/compile ~(capture 1)))
+  # =>
+  :function
+
+  (peg/match
+    (peg/compile ~(capture 1))
+    "xy"
+    0)
+  # =>
+  @["x"]
+
+  (type (comptime (peg/compile ~(capture 1))))
+  # =>
+  :function
+
+  (peg/match
+    (comptime
+      (peg/compile ~(capture 1)))
+    "xy"
+    0)
+  # =>
+  @["x"]
+
+  (string/has-prefix?
+    "start "
+    (try
+      (let [compiled-peg (peg/compile ~(capture 1))]
+        (peg/match compiled-peg "xy" -4))
+      ([e] e)))
+  # =>
+  true
+
+  )
+````````
+"_dictionary"
+````````
 (import ../margaret/meg :as peg)
 
 # `{:main <rule> ...}`
@@ -171,12 +315,9 @@
   true
 
   )
-
-  `````
-)
-
-(def data/_integer
-  `````
+````````
+"_integer"
+````````
 (import ../margaret/meg :as peg)
 
 # `<n>` -- where <n> is an integer
@@ -234,12 +375,77 @@
   @[]
 
   )
+````````
+"_start"
+````````
+(import ../margaret/meg :as peg)
 
-  `````
-)
+(comment
 
-(def data/_string
-  `````
+  (peg/match ~(capture 1)
+             "xy"
+             0)
+  # =>
+  @["x"]
+
+  (peg/match ~(capture 1)
+             "xy"
+             1)
+  # =>
+  @["y"]
+
+  (peg/match ~(capture 1)
+             "xy"
+             2)
+  # =>
+  nil
+
+  (peg/match ~(capture 1)
+             "xy"
+             -1)
+  # =>
+  nil
+
+  (peg/match ~(capture 1)
+             "xy"
+             -2)
+  # =>
+  @["y"]
+
+  (peg/match ~(capture 1)
+             "xy"
+             -3)
+  # =>
+  @["x"]
+
+  )
+
+(comment
+
+  (string/has-prefix?
+    "start "
+    (try
+      (peg/match ~(capture 1)
+                 "xy"
+                 3)
+      ([e] e)))
+  # =>
+  true
+
+  (string/has-prefix?
+    "start "
+    (try
+      (peg/match ~(capture 1)
+                 "xy"
+                 -4)
+      ([e] e)))
+  # =>
+  true
+
+  )
+````````
+"_string"
+````````
 (import ../margaret/meg :as peg)
 
 # `"<s>"` -- where <s> is string content
@@ -269,12 +475,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/accumulate
-  `````
+````````
+"accumulate"
+````````
 (import ../margaret/meg :as peg)
 
 # `(accumulate patt ?tag)`
@@ -335,12 +538,9 @@
   @["a1b2c3"]
 
   )
-
-  `````
-)
-
-(def data/any
-  `````
+````````
+"any"
+````````
 (import ../margaret/meg :as peg)
 
 # `(any patt)`
@@ -368,12 +568,9 @@
   @["aa"]
 
   )
-
-  `````
-)
-
-(def data/argument
-  `````
+````````
+"argument"
+````````
 (import ../margaret/meg :as peg)
 
 # `(argument n ?tag)`
@@ -411,12 +608,9 @@
   @[:smile :smile]
 
   )
-
-  `````
-)
-
-(def data/at-least
-  `````
+````````
+"at-least"
+````````
 (import ../margaret/meg :as peg)
 
 # `(at-least n patt)`
@@ -436,12 +630,9 @@
   @[]
 
   )
-
-  `````
-)
-
-(def data/at-most
-  `````
+````````
+"at-most"
+````````
 (import ../margaret/meg :as peg)
 
 # `(at-most n patt)`
@@ -460,12 +651,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/backmatch
-  `````
+````````
+"backmatch"
+````````
 (import ../margaret/meg :as peg)
 
 # `(backmatch ?tag)`
@@ -628,12 +816,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/backref
-  `````
+````````
+"backref"
+````````
 (import ../margaret/meg :as peg)
 
 # `(backref prev-tag ?tag)`
@@ -694,12 +879,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/between
-  `````
+````````
+"between"
+````````
 (import ../margaret/meg :as peg)
 
 # `(between min max patt)`
@@ -803,12 +985,9 @@
   @["b"]
 
   )
-
-  `````
-)
-
-(def data/capture
-  `````
+````````
+"capture"
+````````
 (import ../margaret/meg :as peg)
 
 # `(capture patt ?tag)`
@@ -965,12 +1144,9 @@
   @["c"]
 
   )
-
-  `````
-)
-
-(def data/choice
-  `````
+````````
+"choice"
+````````
 (import ../margaret/meg :as peg)
 
 # `(choice patt-1 patt-2 ...)`
@@ -1023,12 +1199,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/cms
-  `````
+````````
+"cms"
+````````
 (import ../margaret/meg :as peg)
 
 # `(cms patt fun ?tag)`
@@ -1105,12 +1278,9 @@
   @["name" "tao"]
 
   )
-
-  `````
-)
-
-(def data/cmt
-  `````
+````````
+"cmt"
+````````
 (import ../margaret/meg :as peg)
 
 # `(cmt patt fun ?tag)`
@@ -1185,12 +1355,9 @@
   @["name" "tao"]
 
   )
-
-  `````
-)
-
-(def data/column
-  `````
+````````
+"column"
+````````
 (import ../margaret/meg :as peg)
 
 # `(column ?tag)`
@@ -1230,12 +1397,9 @@
   @[3 "c"]
 
   )
-
-  `````
-)
-
-(def data/constant
-  `````
+````````
+"constant"
+````````
 (import ../margaret/meg :as peg)
 
 # `(constant k ?tag)`
@@ -1261,12 +1425,9 @@
   @[:relax 0]
 
   )
-
-  `````
-)
-
-(def data/drop
-  `````
+````````
+"drop"
+````````
 (import ../margaret/meg :as peg)
 
 # `(drop patt)`
@@ -1288,12 +1449,9 @@
   @["89"]
 
   )
-
-  `````
-)
-
-(def data/error
-  `````
+````````
+"error"
+````````
 (import ../margaret/meg :as peg)
 
 # `(error ?patt)`
@@ -1367,11 +1525,9 @@
   :match-error
 
   )
-  `````
-)
-
-(def data/group
-  `````
+````````
+"group"
+````````
 (import ../margaret/meg :as peg)
 
 # `(group patt ?tag)`
@@ -1402,12 +1558,9 @@
   @[@["a" @["b"]]]
 
   )
-
-  `````
-)
-
-(def data/if-not
-  `````
+````````
+"if-not"
+````````
 (import ../margaret/meg :as peg)
 
 # `(if-not cond patt)`
@@ -1441,12 +1594,9 @@
   @[]
 
   )
-
-  `````
-)
-
-(def data/if
-  `````
+````````
+"if"
+````````
 (import ../margaret/meg :as peg)
 
 # `(if cond patt)`
@@ -1473,12 +1623,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/int-be
-  `````
+````````
+"int-be"
+````````
 (import ../margaret/meg :as peg)
 
 # `(int-be n ?tag)`
@@ -1516,12 +1663,9 @@
   @[0x7fff]
 
   )
-
-  `````
-)
-
-(def data/int
-  `````
+````````
+"int"
+````````
 (import ../margaret/meg :as peg)
 
 # `(int n ?tag)`
@@ -1572,12 +1716,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/lenprefix
-  `````
+````````
+"lenprefix"
+````````
 (import ../margaret/meg :as peg)
 
 # `(lenprefix n patt)`
@@ -1665,12 +1806,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/line
-  `````
+````````
+"line"
+````````
 (import ../margaret/meg :as peg)
 
 # `(line ?tag)`
@@ -1698,12 +1836,9 @@
   @[1 "b"]
 
   )
-
-  `````
-)
-
-(def data/look
-  `````
+````````
+"look"
+````````
 (import ../margaret/meg :as peg)
 
 # `(look ?offset patt)`
@@ -1771,12 +1906,9 @@
   @[]
 
   )
-
-  `````
-)
-
-(def data/not
-  `````
+````````
+"not"
+````````
 (import ../margaret/meg :as peg)
 
 # `(not patt)`
@@ -1816,12 +1948,9 @@
   @[]
 
   )
-
-  `````
-)
-
-(def data/nth
-  `````
+````````
+"nth"
+````````
 (import ../margaret/meg :as peg)
 
 # `(nth index patt ?tag)`
@@ -1846,12 +1975,9 @@
   @["fox" "elephant"]
 
   )
-
-  `````
-)
-
-(def data/number
-  `````
+````````
+"number"
+````````
 (import ../margaret/meg :as peg)
 
 # `(number patt ?base ?tag)`
@@ -1926,12 +2052,9 @@
   @[4 "Wiki" 6 "pedia " 14 "in \r\n\r\nchunks." 0 ""]
 
   )
-
-  `````
-)
-
-(def data/only-tags
-  `````
+````````
+"only-tags"
+````````
 (import ../margaret/meg :as peg)
 
 # `(only-tags patt)`
@@ -1959,12 +2082,9 @@
   @["ant" "bee" "flower"]
 
   )
-
-  `````
-)
-
-(def data/position
-  `````
+````````
+"position"
+````````
 (import ../margaret/meg :as peg)
 
 # `(position ?tag)`
@@ -2024,12 +2144,9 @@
                     a-buf)))
 
   )
-
-  `````
-)
-
-(def data/range
-  `````
+````````
+"range"
+````````
 (import ../margaret/meg :as peg)
 
 # `(range r1 ?r2 .. ?rn)`
@@ -2071,12 +2188,9 @@
   @[]
 
   )
-
-  `````
-)
-
-(def data/repeat
-  `````
+````````
+"repeat"
+````````
 (import ../margaret/meg :as peg)
 
 # `(repeat n patt)`
@@ -2108,12 +2222,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/replace
-  `````
+````````
+"replace"
+````````
 (import ../margaret/meg :as peg)
 
 # `(replace patt subst ?tag)`
@@ -2203,12 +2314,9 @@
   @[:hi "cat"]
 
   )
-
-  `````
-)
-
-(def data/sequence
-  `````
+````````
+"sequence"
+````````
 (import ../margaret/meg :as peg)
 
 # `(sequence patt-1 patt-2 ...)`
@@ -2292,12 +2400,9 @@
     "PATCH")
 
   )
-
-  `````
-)
-
-(def data/set
-  `````
+````````
+"set"
+````````
 (import ../margaret/meg :as peg)
 
 # `(set chars)`
@@ -2327,12 +2432,9 @@
   @["c"]
 
   )
-
-  `````
-)
-
-(def data/some
-  `````
+````````
+"some"
+````````
 (import ../margaret/meg :as peg)
 
 # `(some patt)`
@@ -2360,12 +2462,9 @@
   @["aa"]
 
   )
-
-  `````
-)
-
-(def data/split
-  `````
+````````
+"split"
+````````
 (import ../margaret/meg :as peg)
 
 # `(split separator-patt patt)`
@@ -2442,12 +2541,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/sub
-  `````
+````````
+"sub"
+````````
 (import ../margaret/meg :as peg)
 
 # `(sub window-patt patt)`
@@ -2678,11 +2774,9 @@
 
 
   )
-  `````
-)
-
-(def data/thru
-  `````
+````````
+"thru"
+````````
 (import ../margaret/meg :as peg)
 
 # `(thru patt)`
@@ -2751,12 +2845,9 @@
     @["20/12" "11/01"]]
 
   )
-
-  `````
-)
-
-(def data/til
-  `````
+````````
+"til"
+````````
 (import ../margaret/meg :as peg)
 
 # `(til sep patt)`
@@ -2827,12 +2918,9 @@
   @[]
 
   )
-
-  `````
-)
-
-(def data/to
-  `````
+````````
+"to"
+````````
 (import ../margaret/meg :as peg)
 
 # `(to patt)`
@@ -2877,12 +2965,9 @@
   nil
 
   )
-
-  `````
-)
-
-(def data/uint-be
-  `````
+````````
+"uint-be"
+````````
 (import ../margaret/meg :as peg)
 
 # `(uint-be n ?tag)`
@@ -2915,12 +3000,9 @@
   @[24930 24930]
 
   )
-
-  `````
-)
-
-(def data/uint
-  `````
+````````
+"uint"
+````````
 (import ../margaret/meg :as peg)
 
 # `(uint n ?tag)`
@@ -2963,12 +3045,9 @@
   @[25185 25185]
 
   )
-
-  `````
-)
-
-(def data/unref
-  `````
+````````
+"unref"
+````````
 (import ../margaret/meg :as peg)
 
 # `(unref rule ?tag)`
@@ -3036,7 +3115,5 @@
                :value @["Hello"]}]}]
 
   )
-
-  `````
-)
-
+````````
+  })
