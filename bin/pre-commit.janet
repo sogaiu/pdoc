@@ -20,3 +20,6 @@
          "niche exited: %d" niche-exit)
 (print "done")
 
+(print "if margaret was updated")
+(print "* ensure summary is up-to-date in examples.janet")
+(print "* ensure specials is up-to-date in parse.janet")

@@ -5,6 +5,7 @@
     "*" "sequence"
     "opt" "between"
     "?" "between"
+    "??" "debug"
     "!" "not"
     ">" "look"
     "<-" "capture"
@@ -65,6 +66,7 @@
 
   )
 
+# XXX: better to generate or else will get out of sync
 (def summary
   ``
   Primitive Patterns
@@ -120,6 +122,9 @@
     uint-be                =  (uint-be n ?tag)
     unref                  =  (unref rule ?tag)
 
+  Other Patterns
+    debug (??)             =  (debug)
+
   Built-ins
     :a                     =  (range "AZ" "az")
     :d                     =  (range "09")
@@ -170,6 +175,7 @@
     (opt patt)             =  (between 0 1 patt)
     (quote patt ?tag)      =  (capture patt ?tag)
     'patt                  =  (capture patt)
+    (??)                   =  (debug)
   ``)
 
 (defn get-content

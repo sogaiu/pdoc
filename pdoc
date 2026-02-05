@@ -164,6 +164,9 @@
 #   uint-be                =  (uint-be n ?tag)
 #   unref                  =  (unref rule ?tag)
 #
+# Other Patterns
+#   debug (??)             =  (debug)
+#
 # Built-ins
 #   :a                     =  (range "AZ" "az")
 #   :d                     =  (range "09")
@@ -214,6 +217,7 @@
 #   (opt patt)             =  (between 0 1 patt)
 #   (quote patt ?tag)      =  (capture patt ?tag)
 #   'patt                  =  (capture patt)
+#   (??)                   =  (debug)
 #
 ````````
 "_boolean"
@@ -1531,6 +1535,112 @@
              "whatever")
   # =>
   @[:relax 0]
+
+  )
+````````
+"debug"
+````````
+(import ../margaret/meg :as peg)
+
+# `(debug)`
+
+# Print capture stack (sometimes partial) to stdout.
+
+# `(??)` is an alias for `(debug)`
+
+(comment
+
+  (def eol (if (= :windows (os/which)) "\r\n" "\n"))
+
+  (let [buf @""]
+    (with-dyns [:out buf]
+      [(peg/match ~(sequence (capture "a") (??))
+                  "a")
+       buf]))
+  # =>
+  [@["a"]
+   (buffer eol
+           "?? at []" eol
+           "stack [1]:" eol
+           "  [0]: \e[35m" `"a"` "\e[0m" eol)]
+
+  (let [buf @""]
+    (with-dyns [:out buf]
+      [(peg/match ~(sequence (debug) "abc")
+                  "abc")
+       buf]))
+  # =>
+  [@[]
+   (buffer eol
+           "?? at [abc]" eol
+           "stack [0]:" eol)]
+
+  (let [buf @""]
+    (with-dyns [:out buf]
+      [(peg/match ~(sequence (??) "abc")
+                  "abc")
+       buf]))
+  # =>
+  [@[]
+   (buffer eol
+           "?? at [abc]" eol
+           "stack [0]:" eol)]
+
+  (let [buf @""]
+    (with-dyns [:out buf]
+      [(peg/match ~(sequence "abc" (??))
+                  "abc")
+       buf]))
+  # =>
+  [@[]
+   (buffer eol
+           "?? at []" eol
+           "stack [0]:" eol)]
+
+  (let [buf @""]
+    (with-dyns [:out buf]
+      [(peg/match ~(sequence "a" (??) "bc")
+                  "abc")
+       buf]))
+  # =>
+  [@[]
+   (buffer eol
+           "?? at [bc]" eol
+           "stack [0]:" eol)]
+
+  (let [buf @""]
+    (with-dyns [:out buf]
+      [(peg/match ~(sequence (capture "a") (??) "bc")
+                  "abc")
+       buf]))
+  # =>
+  [@["a"]
+   (buffer eol
+           "?? at [bc]" eol
+           "stack [1]:" eol
+           "  [0]: \e[35m" `"a"` "\e[0m" eol)]
+
+  (let [buf @""]
+    (with-dyns [:out buf]
+      [(peg/match ~(sequence (capture "a")
+                             (number :d)
+                             (constant true)
+                             (constant {})
+                             (constant @[])
+                             (??)
+                             "bc")
+                  "a1bc")
+       buf]))
+  # =>
+  [@["a" 1 true {} @[]]
+   (buffer eol
+           "?? at [bc]" eol
+           "stack [5]:" eol
+           "  [0]: \e[35m" `"a"` "\e[0m" eol
+           "  [1]: \e[32m" "1" "\e[0m" eol
+           "  [2]: \e[36m" "true" "\e[0m" eol
+           "  [3]: {}" eol
+           "  [4]: @[]" eol)]
 
   )
 ````````
@@ -3235,6 +3345,7 @@
     "*" "sequence"
     "opt" "between"
     "?" "between"
+    "??" "debug"
     "!" "not"
     ">" "look"
     "<-" "capture"
@@ -3295,6 +3406,7 @@
 
   )
 
+# XXX: better to generate or else will get out of sync
 (def ex/summary
   ``
   Primitive Patterns
@@ -3350,6 +3462,9 @@
     uint-be                =  (uint-be n ?tag)
     unref                  =  (unref rule ?tag)
 
+  Other Patterns
+    debug (??)             =  (debug)
+
   Built-ins
     :a                     =  (range "AZ" "az")
     :d                     =  (range "09")
@@ -3400,6 +3515,7 @@
     (opt patt)             =  (between 0 1 patt)
     (quote patt ?tag)      =  (capture patt ?tag)
     'patt                  =  (capture patt)
+    (??)                   =  (debug)
   ``)
 
 (defn ex/get-content
@@ -7621,22 +7737,22 @@
 # XXX: does not have integers, strings, structs, and alias for repeat
 # XXX: hard-wiring -- is there a better way?
 (def p/specials
-  (tabseq [k :in ['! '$ '% '* '+ '-> '/ '<- '> '?
+  (tabseq [k :in ['! '$ '% '* '+ '-> '/ '<- '> '? '??
                   'accumulate 'any 'argument 'at-least 'at-most
                   'backmatch 'backref 'between
-                  'capture 'choice 'cmt 'column 'constant
-                  'drop
+                  'capture 'choice 'cmt 'cms 'column 'constant
+                  'debug 'drop
                   'error
                   'group
                   'if 'if-not 'int 'int-be
                   'lenprefix 'line 'look
-                  'not 'number
-                  'opt
+                  'not 'nth 'number
+                  'opt 'only-tags
                   'position
                   'quote
                   'range 'repeat 'replace
-                  'sequence 'set 'some
-                  'thru 'to
+                  'sequence 'set 'some 'split 'sub
+                  'thru 'til 'to
                   'uint 'uint-be 'unref]]
     (string k) true))
 
@@ -8897,7 +9013,7 @@
 
 
 
-(def version "2026-01-28_10-47-14")
+(def version "2026-02-05_14-04-59")
 
 (def usage
   ``

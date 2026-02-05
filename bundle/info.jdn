@@ -17,7 +17,7 @@
    :paths [["jipper.janet" "src/"]]}
   {:name "margaret"
    :url "https://github.com/sogaiu/margaret"
-   :tag "236718cf0f7e76fe41d0f4982b9f8c10ddfaa97d"
+   :tag "4a1f7ab95885db4f0bbbcd8a9724b7a9fd929bc5"
    :paths [["examples/" "data/"]]}
   {:name "niche"
    :url "https://github.com/sogaiu/niche"
