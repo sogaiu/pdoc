@@ -76,7 +76,7 @@
 
   # help completion by showing a raw list of relevant names
   (when (opts :raw-all)
-    (s/all-names data/names)
+    (s/all-names (keys data/names))
     (os/exit 0))
 
   # check if there was a peg special specified
