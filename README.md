@@ -196,8 +196,8 @@ Captures
   argument               =  (argument n ?tag)
   backref (->)           =  (backref prev-tag ?tag)
   capture (<-, quote)    =  (capture patt ?tag)
-  cms                    =  (cms patt fun ?tag)
   cmt                    =  (cmt patt fun ?tag)
+  cms                    =  (cms patt fun ?tag)
   column                 =  (column ?tag)
   constant               =  (constant k ?tag)
   drop                   =  (drop patt)
@@ -215,6 +215,9 @@ Captures
   uint                   =  (uint n ?tag)
   uint-be                =  (uint-be n ?tag)
   unref                  =  (unref rule ?tag)
+
+Other Patterns
+  debug (??)             =  (debug)
 
 Built-ins
   :a                     =  (range "AZ" "az")
@@ -266,6 +269,7 @@ Aliases
   (opt patt)             =  (between 0 1 patt)
   (quote patt ?tag)      =  (capture patt ?tag)
   'patt                  =  (capture patt)
+  (??)                   =  (debug)
 ```
 
 ### Flexible Option Position
