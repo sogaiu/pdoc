@@ -9,23 +9,23 @@
    :paths [["sbb.janet" "bundle/"]]}
   {:name "jell"
    :url "https://github.com/sogaiu/jell"
-   :tag "c951427684ae6ee64582d28309f161b12050f11d"
+   :tag "ebebec3b772078678b0e8a4c6551fcab70329a69"
    :paths [["jell" "bin/"]]}
   {:name "jipper"
    :url "https://github.com/sogaiu/jipper"
-   :tag "7e2876d4a4bad8cd080cf150230ecadc31ed9b20"
+   :tag "ed93678dac43aa25bfb60c78aad5087bbfac4bb0"
    :paths [["jipper.janet" "src/"]]}
   {:name "margaret"
    :url "https://github.com/sogaiu/margaret"
-   :tag "4a1f7ab95885db4f0bbbcd8a9724b7a9fd929bc5"
+   :tag "97f9d9fa4b05d8f2106d60330cde8d3fa40c4829"
    :paths [["examples/" "data/"]]}
   {:name "niche"
    :url "https://github.com/sogaiu/niche"
-   :tag "15f5746d95932b7c939aff2ccc6aa91633f2d5e4"
+   :tag "7d6914d48132b13241154252b20b131b1d0e46ba"
    :paths [["niche.janet" "bin/"]]}
   {:name "spork"
    :url "https://github.com/janet-lang/spork"
-   :tag "60110c3688c5687cc603159bcfa38d579f95a27d"
+   :tag "06ba2ed185631714e0fce0056927980ff4d9538c"
    :paths [["spork/sh-dsl.janet" "bin/"]]}]
 
  :binscripts
