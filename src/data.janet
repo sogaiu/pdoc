@@ -1561,6 +1561,18 @@
            "  [3]: {}" eol
            "  [4]: @[]" eol)]
 
+  # regression test for change in janet's %m / %M behavior
+  (let [buf @""]
+    (with-dyns [:err buf]
+      [(peg/match ~(sequence (constant @[]) (??))
+                  "a")
+       buf]))
+  # =>
+  [@[@[]]
+   (buffer "?? at [a] (index 0)" eol
+           "stack [1]:" eol
+           "  [0]: @[]" eol)]
+
   (let [buf @""]
     (with-dyns [:err buf]
       [(peg/match
@@ -2794,10 +2806,10 @@
   # =>
   @[]
 
- (peg/match ~(sequence (sub (capture "abcd" :a)
-                            (capture "abc"))
-                       (capture (backmatch)))
-            "abcdabcd")
+  (peg/match ~(sequence (sub (capture "abcd" :a)
+                             (capture "abc"))
+                        (capture (backmatch)))
+             "abcdabcd")
   # =>
   @["abcd" "abc" "abc"]
 
@@ -3041,6 +3053,12 @@
 # `(sequence (sub (drop (to sep)) patt) (drop sep))`
 
 (comment
+
+  (peg/match ~(sequence (til ";" (capture :a+))
+                        (capture :d+))
+             "xyz_;123")
+  # =>
+  @["xyz" "123"]
 
   (peg/match ~(sequence (til "bcde" (capture (to -1)))
                         (capture (to -1)))
